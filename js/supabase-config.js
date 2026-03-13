@@ -94,20 +94,60 @@ window.saveToSupabase = async function(campaign) {
 
 console.log('✅ Supabase functions registered:', typeof window.saveToSupabase, typeof window.getSupabaseCampaigns);
 
-// ── Process a donation via Supabase RPC function ────────────
-window.processDonationInDB = async function(campaignId, amount) {
+// ── Process a donation ──────────────────────────────────────
+// Strategy: DELETE the old row, INSERT a new row with updated values.
+// This works because we have INSERT + SELECT policies (no UPDATE needed).
+window.processDonationInDB = async function(campaignId, amount, donorName, donorEmail) {
   if (!_supabaseClient) return false;
   try {
-    var result = await _supabaseClient.rpc('process_donation', {
-      campaign_id: campaignId,
-      donation_amount: amount
-    });
+    // 1. Fetch current campaign
+    var fetchResult = await _supabaseClient
+      .from('campaigns')
+      .select('*')
+      .eq('id', campaignId)
+      .single();
 
-    if (result.error) {
-      console.error('Donation RPC error:', result.error.message);
+    if (fetchResult.error || !fetchResult.data) {
+      console.warn('Campaign not in DB:', campaignId);
       return false;
     }
-    console.log('✅ Donation of ₹' + amount + ' recorded for campaign ' + campaignId);
+
+    var row = fetchResult.data;
+    var newRaised = (Number(row.raised) || 0) + amount;
+    var newDonors = (Number(row.donors) || 0) + 1;
+
+    // 2. Delete old row
+    var delResult = await _supabaseClient
+      .from('campaigns')
+      .delete()
+      .eq('id', campaignId);
+
+    // 3. Insert updated row (with new raised/donors)
+    var insertResult = await _supabaseClient
+      .from('campaigns')
+      .insert([{
+        id:          row.id,
+        title:       row.title,
+        org:         row.org,
+        category:    row.category,
+        description: row.description,
+        raised:      newRaised,
+        goal:        row.goal,
+        donors:      newDonors,
+        days_left:   row.days_left,
+        urgent:      row.urgent,
+        verified:    row.verified,
+        location:    row.location,
+        email:       row.email,
+        created_at:  row.created_at
+      }]);
+
+    if (insertResult.error) {
+      console.error('Donation re-insert error:', insertResult.error.message);
+      return false;
+    }
+
+    console.log('✅ Donation of ₹' + amount + ' recorded! New total: ₹' + newRaised + ' (' + newDonors + ' donors)');
     return true;
   } catch (e) {
     console.error('Donation processing failed:', e);
