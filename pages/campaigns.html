@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Campaigns — HopeFund | Browse Social Causes</title>
+  <meta name="description" content="Browse and donate to hundreds of verified social causes on HopeFund. Filter by water, education, environment, healthcare, and more." />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💚</text></svg>" />
+</head>
+<body>
+
+  <!-- ═══ NAVBAR ═══════════════════════════════════════════ -->
+  <nav class="navbar scrolled" id="navbar">
+    <div class="container">
+      <a href="../index.html" class="nav-logo">
+        <div class="logo-icon">💚</div>
+        <span class="logo-text">Hope<span>Fund</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="campaigns.html" class="active">Campaigns</a></li>
+        <li><a href="create.html">Start a Campaign</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="create.html" class="btn btn-primary btn-sm">🚀 Start Campaign</a>
+      </div>
+      <div class="nav-menu-toggle" id="menuToggle">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </nav>
+
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="../index.html">Home</a>
+    <a href="campaigns.html">Campaigns</a>
+    <a href="create.html">Start a Campaign</a>
+    <a href="about.html">About Us</a>
+    <a href="create.html" class="btn btn-primary">🚀 Get Started</a>
+  </div>
+
+  <main>
+    <!-- ═══ PAGE HERO ═════════════════════════════════════ -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-badge" style="margin: 0 auto 20px; width:fit-content;">
+          <span class="dot"></span>
+          <span id="campaign-count">9 active campaigns</span>
+        </div>
+        <h1>Browse <span class="gradient-text">All Campaigns</span></h1>
+        <p>Discover verified social causes that need your support. Filter by category and find the change you want to create in the world.</p>
+      </div>
+    </section>
+
+    <!-- ═══ CAMPAIGNS PAGE ═════════════════════════════════ -->
+    <section class="campaigns-page">
+      <div class="container">
+
+        <!-- Toolbar -->
+        <div class="campaigns-toolbar">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" placeholder="Search campaigns..." oninput="filterCampaigns()" />
+          </div>
+          <div class="campaigns-filter" style="margin-bottom:0;">
+            <button class="filter-btn active" data-filter="all" onclick="setFilter(this,'all')">All</button>
+            <button class="filter-btn" data-filter="water" onclick="setFilter(this,'water')">💧 Water</button>
+            <button class="filter-btn" data-filter="education" onclick="setFilter(this,'education')">📚 Education</button>
+            <button class="filter-btn" data-filter="environment" onclick="setFilter(this,'environment')">🌿 Env</button>
+            <button class="filter-btn" data-filter="healthcare" onclick="setFilter(this,'healthcare')">🏥 Health</button>
+            <button class="filter-btn" data-filter="hunger" onclick="setFilter(this,'hunger')">🍎 Hunger</button>
+            <button class="filter-btn" data-filter="disaster" onclick="setFilter(this,'disaster')">🆘 Disaster</button>
+          </div>
+          <select class="sort-select" id="sortSelect" onchange="filterCampaigns()">
+            <option value="default">Sort by: Featured</option>
+            <option value="most-funded">Most Funded</option>
+            <option value="urgent">Most Urgent</option>
+            <option value="newest">Newest</option>
+            <option value="ending-soon">Ending Soon</option>
+          </select>
+        </div>
+
+        <!-- Results count -->
+        <p id="resultsCount" style="color: var(--text-muted); font-size:.88rem; margin-bottom: 24px;">
+          Showing all 9 campaigns
+        </p>
+
+        <!-- Grid -->
+        <div class="campaigns-grid" id="campaignsGrid"></div>
+
+        <!-- Empty State -->
+        <div id="emptyState" style="display:none; text-align:center; padding: 80px 0;">
+          <div style="font-size:3rem; margin-bottom:16px;">🔍</div>
+          <h3>No campaigns found</h3>
+          <p style="color:var(--text-secondary); margin-top:8px;">Try a different search or category filter.</p>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ═══ FOOTER ════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 HopeFund. All rights reserved. 💚</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="../index.html">Home</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ═══ DONATE MODAL ══════════════════════════════════ -->
+  <div class="modal-overlay" id="donateModal">
+    <div class="modal">
+      <button class="modal-close" onclick="closeDonateModal()">✕</button>
+      <h2>💚 Make a Donation</h2>
+      <p class="modal-sub" id="modal-campaign-name">Supporting: —</p>
+      <div class="donation-amounts">
+        <button class="donation-amt-btn" onclick="selectAmt(this, 500)">₹500</button>
+        <button class="donation-amt-btn" onclick="selectAmt(this, 1000)">₹1,000</button>
+        <button class="donation-amt-btn" onclick="selectAmt(this, 2000)">₹2,000</button>
+        <button class="donation-amt-btn" onclick="selectAmt(this, 5000)">₹5,000</button>
+        <button class="donation-amt-btn" onclick="selectAmt(this, 10000)">₹10,000</button>
+        <button class="donation-amt-btn" onclick="selectAmt(this, 25000)">₹25,000</button>
+      </div>
+      <div class="form-group">
+        <label for="custom-amount">Or Enter Custom Amount (₹)</label>
+        <input type="number" id="custom-amount" placeholder="e.g. 75" min="1" oninput="clearAmtBtns()" />
+      </div>
+      <div class="form-group">
+        <label for="donor-name">Full Name</label>
+        <input type="text" id="donor-name" placeholder="Jane Doe" />
+      </div>
+      <div class="form-group">
+        <label for="donor-email">Email Address</label>
+        <input type="email" id="donor-email" placeholder="jane@email.com" />
+      </div>
+      <div class="form-group">
+        <label for="card-number">Card Number</label>
+        <input type="text" id="card-number" placeholder="4242 4242 4242 4242" maxlength="19" oninput="formatCard(this)" />
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+        <div class="form-group">
+          <label for="card-expiry">Expiry</label>
+          <input type="text" id="card-expiry" placeholder="MM/YY" maxlength="5" oninput="formatExpiry(this)" />
+        </div>
+        <div class="form-group">
+          <label for="card-cvv">CVV</label>
+          <input type="password" id="card-cvv" placeholder="•••" maxlength="3" />
+        </div>
+      </div>
+      <button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:8px;" onclick="processDonation()" id="donate-submit-btn">
+        💚 Complete Donation
+      </button>
+      <p style="text-align:center;font-size:.78rem;color:var(--text-muted);margin-top:12px;">
+        🔒 256-bit SSL Encrypted · 95% goes to the cause · Payments in ₹ INR
+      </p>
+    </div>
+  </div>
+
+  <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
+  <div class="toast" id="toast"><span class="toast-icon" id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+  <script src="../js/data.js"></script>
+  <script>
+    /* ── Navbar ─────────────────────────────────────────────── */
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 200);
+    }, { passive: true });
+
+    /* ── Mobile nav ─────────────────────────────────────────── */
+    document.getElementById('menuToggle').addEventListener('click', () => document.getElementById('mobileNav').classList.add('open'));
+    document.getElementById('mobileNavClose').addEventListener('click', () => document.getElementById('mobileNav').classList.remove('open'));
+
+    /* ── Reveal ─────────────────────────────────────────────── */
+    const rObs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('revealed'), i * 60);
+          rObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => rObs.observe(el));
+
+    /* ── Campaign Rendering ─────────────────────────────────── */
+    const IMAGE_MAP = {
+      water:       '../assets/images/campaign_water.png',
+      education:   '../assets/images/campaign_education.png',
+      environment: '../assets/images/campaign_environment.png',
+      healthcare:  '../assets/images/campaign_healthcare.png',
+      hunger:      '../assets/images/campaign_education.png',
+      disaster:    '../assets/images/hero_banner.png',
+      community:   '../assets/images/about_team.png',
+      animals:     '../assets/images/campaign_environment.png',
+    };
+    const CAT_LABELS = {water:'💧 Water',education:'📚 Education',environment:'🌿 Environment',healthcare:'🏥 Healthcare',hunger:'🍎 Hunger',disaster:'🆘 Disaster',community:'🤝 Community',animals:'🐾 Animals'};
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ── Self-contained helpers (fallback if data.js not loaded) ── */
+    if (typeof formatINR === 'undefined') {
+      window.formatINR = function(n) {
+        if (n >= 10000000) return '\u20b9' + (n/10000000).toFixed(2).replace(/\.?0+$/,'') + ' Cr';
+        if (n >= 100000)   return '\u20b9' + (n/100000).toFixed(1).replace(/\.0$/,'') + ' L';
+        if (n >= 1000)     return '\u20b9' + (n/1000).toFixed(0) + 'K';
+        return '\u20b9' + n.toLocaleString('en-IN');
+      };
+    }
+    if (typeof getAllCampaigns === 'undefined') {
+      window.getUserCampaigns = function() {
+        try { return JSON.parse(localStorage.getItem('hopefund_campaigns') || '[]'); }
+        catch(e) { return []; }
+      };
+      window.getAllCampaigns = function() {
+        return [...getUserCampaigns(), ...(window.CAMPAIGNS || [])];
+      };
+    }
+
+    function buildCard(c) {
+      const pct = Math.round((c.raised / c.goal) * 100);
+      const isNew = !!c.userCreated;
+      return `
+        <div class="campaign-card reveal" data-cat="${c.category}" onclick="openDonateModal('${escapeHtml(c.title)}')" role="article" aria-label="${escapeHtml(c.title)}">
+          <div class="card-img">
+            <img src="${IMAGE_MAP[c.category] || '../assets/images/hero_banner.png'}" alt="${escapeHtml(c.title)}" loading="lazy" />
+            <span class="card-category cat-${c.category}">${CAT_LABELS[c.category] || c.category}</span>
+            ${isNew ? '<span class="card-urgency" style="background:rgba(30,180,100,.85);">\uD83C\uDD95 New</span>' : (c.urgent ? '<span class="card-urgency">\u26A1 Urgent</span>' : '')}
+          </div>
+          <div class="card-body">
+            <div class="card-meta">
+              <span class="card-org">${escapeHtml(c.org)} ${c.verified ? '<span class="verified-badge" title="Verified">\u2713</span>' : ''}
+              ${isNew ? '<span style="color:hsl(142,60%,55%);font-size:.75rem;font-weight:700;"> \u00b7 Just Added</span>' : ''}</span>
+            </div>
+            <h3>${escapeHtml(c.title)}</h3>
+            <p>${escapeHtml(c.description)}</p>
+            <div class="progress-wrap">
+              <div class="progress-bar-bg">
+                <div class="progress-bar-fill" style="width:${Math.min(pct,100)}%"></div>
+              </div>
+              <div class="progress-info">
+                <span class="progress-raised">${formatINR(c.raised)}</span>
+                <span class="progress-goal">of ${formatINR(c.goal)}</span>
+                <span class="progress-pct">${pct}%</span>
+              </div>
+            </div>
+            <div class="card-stats">
+              <span class="card-stat"><span class="icon">\u2764\uFE0F</span>${c.donors.toLocaleString('en-IN')} donors</span>
+              <span class="card-stat"><span class="icon">\u23F0</span>${c.daysLeft} days left</span>
+              <span class="card-stat"><span class="icon">\uD83D\uDCCD</span>${escapeHtml(c.location)}</span>
+            </div>
+            <div class="card-action">
+              <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:12px;" id="donate-card-${c.id}" onclick="event.stopPropagation();openDonateModal('${escapeHtml(c.title)}')">
+                \uD83D\uDC9A Donate Now
+              </button>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    let activeFilter = 'all';
+
+    function setFilter(btn, filter) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = filter;
+      filterCampaigns();
+    }
+
+    function filterCampaigns() {
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      const sort   = document.getElementById('sortSelect').value;
+      let results  = getAllCampaigns().filter(c => {
+        const matchCat    = activeFilter === 'all' || c.category === activeFilter;
+        const matchSearch = !search || c.title.toLowerCase().includes(search) || c.description.toLowerCase().includes(search) || c.org.toLowerCase().includes(search) || c.location.toLowerCase().includes(search);
+        return matchCat && matchSearch;
+      });
+
+      if (sort === 'most-funded')  results.sort((a, b) => (b.raised / b.goal) - (a.raised / a.goal));
+      else if (sort === 'urgent')  results.sort((a, b) => (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0));
+      else if (sort === 'ending-soon') results.sort((a, b) => a.daysLeft - b.daysLeft);
+      else if (sort === 'newest') results.sort((a, b) => b.id - a.id);
+      // default: user campaigns first
+      else results.sort((a, b) => (b.userCreated ? 1 : 0) - (a.userCreated ? 1 : 0));
+
+      const grid = document.getElementById('campaignsGrid');
+      const empty = document.getElementById('emptyState');
+      document.getElementById('resultsCount').textContent = `Showing ${results.length} campaign${results.length !== 1 ? 's' : ''}`;
+      document.getElementById('campaign-count').textContent = `${getAllCampaigns().length} active campaigns`;
+
+      if (results.length === 0) {
+        grid.innerHTML = '';
+        empty.style.display = 'block';
+      } else {
+        empty.style.display = 'none';
+        grid.innerHTML = results.map(buildCard).join('');
+        grid.querySelectorAll('.reveal').forEach(el => rObs.observe(el));
+      }
+    }
+
+    filterCampaigns();
+
+    /* ── Re-render on BFCache restore / tab focus ─────────────── */
+    window.addEventListener('pageshow', function(e) {
+      // Always re-render (handles both fresh load and back-forward cache)
+      filterCampaigns();
+    });
+    window.addEventListener('focus', function() {
+      filterCampaigns();
+    });
+
+    /* ── Donate Modal ───────────────────────────────────────── */
+    const modal = document.getElementById('donateModal');
+    let selectedAmt = 0;
+
+    function openDonateModal(name) {
+      document.getElementById('modal-campaign-name').textContent = 'Supporting: ' + name;
+      modal.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeDonateModal() { modal.classList.remove('open'); document.body.style.overflow = ''; }
+    modal.addEventListener('click', e => { if (e.target === modal) closeDonateModal(); });
+
+    function selectAmt(btn, amt) {
+      document.querySelectorAll('.donation-amt-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedAmt = amt;
+      document.getElementById('custom-amount').value = '';
+    }
+    function clearAmtBtns() {
+      document.querySelectorAll('.donation-amt-btn').forEach(b => b.classList.remove('selected'));
+      selectedAmt = 0;
+    }
+    function formatCard(input) {
+      let v = input.value.replace(/\D/g,'').substring(0,16);
+      input.value = v.replace(/(.{4})/g,'$1 ').trim();
+    }
+    function formatExpiry(input) {
+      let v = input.value.replace(/\D/g,'').substring(0,4);
+      if (v.length >= 3) v = v.substring(0,2)+'/'+v.substring(2);
+      input.value = v;
+    }
+    function processDonation() {
+      const amount = selectedAmt || parseInt(document.getElementById('custom-amount').value) || 0;
+      const name = document.getElementById('donor-name').value.trim();
+      const email = document.getElementById('donor-email').value.trim();
+      const card = document.getElementById('card-number').value.replace(/\s/g,'');
+      if (!amount) return showToast('Please select or enter a donation amount.','error','⚠️');
+      if (!name) return showToast('Please enter your name.','error','⚠️');
+      if (!email || !email.includes('@')) return showToast('Invalid email.','error','⚠️');
+      if (card.length < 12) return showToast('Invalid card number.','error','⚠️');
+      const btn = document.getElementById('donate-submit-btn');
+      btn.textContent = '⏳ Processing...';
+      btn.disabled = true;
+      setTimeout(() => {
+        btn.textContent = '💚 Complete Donation'; btn.disabled = false;
+        closeDonateModal();
+        showToast(`Thank you ${name}! $${amount} donation confirmed 💚`, 'success', '✅');
+      }, 2000);
+    }
+
+    /* ── Toast ─────────────────────────────────────────────── */
+    let toastTimeout;
+    function showToast(msg, type='success', icon='✅') {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-icon').textContent = icon;
+      t.className = `toast ${type} show`;
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => t.classList.remove('show'), 4000);
+    }
+
+    function scrollToTop() { window.scrollTo({ top: 0, behavior: 'smooth' }); }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDonateModal(); });
+  </script>
+</body>
+</html>

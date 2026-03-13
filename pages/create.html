@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Start a Campaign — HopeFund | Launch Your Social Cause</title>
+  <meta name="description" content="Launch your social cause campaign on HopeFund. Our simple 3-step process gets your campaign verified and in front of thousands of donors." />
+  <link rel="stylesheet" href="../css/main.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💚</text></svg>" />
+  <style>
+    .upload-area {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-md);
+      padding: 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+    .upload-area:hover { border-color: var(--primary); background: rgba(120,60,220,.05); }
+    .upload-area .upload-icon { font-size: 2.5rem; margin-bottom: 12px; }
+    .upload-area p { color: var(--text-secondary); font-size: .9rem; }
+    .upload-area span { color: var(--primary-light); font-weight: 600; }
+    .form-step-panel { display: none; }
+    .form-step-panel.active { display: block; }
+    .tip-box {
+      background: rgba(30,180,140,.08);
+      border: 1px solid rgba(30,180,140,.25);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: var(--space-md);
+      font-size: .88rem;
+      color: var(--secondary-light);
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+    }
+    .impact-preview {
+      background: var(--bg-card-2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-xl);
+      margin-top: var(--space-xl);
+    }
+    .impact-preview h3 { margin-bottom: var(--space-md); font-size: 1rem; color: var(--text-secondary); font-weight: 600; }
+    .preview-item { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .preview-item .preview-icon { font-size: 1.4rem; }
+    .preview-item div { font-size: .9rem; color: var(--text-secondary); }
+    .preview-item strong { color: var(--text-primary); font-size: 1rem; }
+    .success-screen { text-align: center; padding: var(--space-2xl); }
+    .success-screen .success-icon { font-size: 4rem; margin-bottom: var(--space-lg); animation: bounceIn .6s var(--ease-spring); }
+    @keyframes bounceIn { from { transform: scale(0); } to { transform: scale(1); } }
+    .success-screen h2 { font-size: 2rem; margin-bottom: var(--space-md); }
+    .success-screen p { color: var(--text-secondary); margin-bottom: var(--space-xl); }
+    .char-count { font-size: .78rem; color: var(--text-muted); text-align: right; margin-top: 4px; }
+    input[type=range] { width: 100%; accent-color: var(--primary); }
+    .range-labels { display: flex; justify-content: space-between; font-size: .78rem; color: var(--text-muted); margin-top: 4px; }
+  </style>
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar scrolled">
+    <div class="container">
+      <a href="../index.html" class="nav-logo">
+        <div class="logo-icon">💚</div>
+        <span class="logo-text">Hope<span>Fund</span></span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="../index.html">Home</a></li>
+        <li><a href="campaigns.html">Campaigns</a></li>
+        <li><a href="create.html" class="active">Start a Campaign</a></li>
+        <li><a href="about.html">About Us</a></li>
+      </ul>
+      <div class="nav-actions">
+        <a href="campaigns.html" class="btn btn-secondary btn-sm">Explore</a>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+      <div class="container">
+        <div class="hero-badge" style="margin:0 auto 20px;width:fit-content;">
+          <span class="dot"></span>
+          Free to create · 95% goes to your cause
+        </div>
+        <h1>Launch Your <span class="gradient-text">Campaign</span></h1>
+        <p>Tell your story, set your goal, and connect with thousands of donors who care about making a difference.</p>
+      </div>
+    </section>
+
+    <!-- TRUST STATS -->
+    <div style="background:var(--bg-card);border-bottom:1px solid var(--border);padding:24px 0;">
+      <div class="container" style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;">
+        <div>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;" class="gradient-text">₹400 Cr+</div>
+          <div style="font-size:.82rem;color:var(--text-muted);">Raised by creators</div>
+        </div>
+        <div>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;" class="gradient-text">12,340</div>
+          <div style="font-size:.82rem;color:var(--text-muted);">Campaigns launched</div>
+        </div>
+        <div>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;" class="gradient-text">48 hrs</div>
+          <div style="font-size:.82rem;color:var(--text-muted);">Avg. verification time</div>
+        </div>
+        <div>
+          <div style="font-family:'Outfit',sans-serif;font-size:1.8rem;font-weight:800;" class="gradient-text">95%</div>
+          <div style="font-size:.82rem;color:var(--text-muted);">Donations to cause</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CREATE FORM -->
+    <section class="create-form-section">
+      <div class="container">
+        <div class="create-form-card" id="createFormCard">
+          <!-- Steps indicator -->
+          <div class="form-steps" id="formSteps">
+            <div class="form-step-item active" id="step-item-1">
+              <div class="form-step-num">1</div>
+              <div class="form-step-label">Basic Info</div>
+            </div>
+            <div class="form-step-item" id="step-item-2">
+              <div class="form-step-num">2</div>
+              <div class="form-step-label">Details</div>
+            </div>
+            <div class="form-step-item" id="step-item-3">
+              <div class="form-step-num">3</div>
+              <div class="form-step-label">Review</div>
+            </div>
+          </div>
+
+          <!-- Step 1: Basic Info -->
+          <div class="form-step-panel active" id="panel-1">
+            <h2 class="form-section-title">📝 Campaign Basics</h2>
+
+            <div class="tip-box">
+              💡 <span>Campaigns with compelling titles and clear goals raise <strong>3x more</strong> than generic ones.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="c-title">Campaign Title *</label>
+              <input type="text" id="c-title" placeholder="e.g. Build a School for 500 Children in Ghana" maxlength="100" oninput="updateChar(this,'c-title-count')" required />
+              <div class="char-count"><span id="c-title-count">0</span>/100</div>
+            </div>
+
+            <div class="form-group">
+              <label for="c-category">Category *</label>
+              <select id="c-category" required>
+                <option value="">Select a category</option>
+                <option value="water">💧 Clean Water</option>
+                <option value="education">📚 Education</option>
+                <option value="environment">🌿 Environment</option>
+                <option value="healthcare">🏥 Healthcare</option>
+                <option value="hunger">🍎 Hunger & Food</option>
+                <option value="disaster">🆘 Disaster Relief</option>
+                <option value="community">🤝 Community</option>
+                <option value="animals">🐾 Animal Welfare</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c-location">Location *</label>
+                <input type="text" id="c-location" placeholder="City, Country" required />
+              </div>
+              <div class="form-group">
+                <label for="c-org">Organisation / Name *</label>
+                <input type="text" id="c-org" placeholder="Your org or full name" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="c-tagline">Short Tagline *</label>
+              <input type="text" id="c-tagline" placeholder="One impactful sentence about your cause" maxlength="140" oninput="updateChar(this,'c-tag-count')" required />
+              <div class="char-count"><span id="c-tag-count">0</span>/140</div>
+            </div>
+
+            <div class="form-nav-btns">
+              <button class="btn btn-primary" onclick="goToStep(2)">Next: Campaign Details →</button>
+            </div>
+          </div>
+
+          <!-- Step 2: Details -->
+          <div class="form-step-panel" id="panel-2">
+            <h2 class="form-section-title">📖 Campaign Details</h2>
+
+            <div class="form-group">
+              <label for="c-story">Your Story *</label>
+              <textarea id="c-story" placeholder="Tell donors who you are, what problem you're solving, how the funds will be used, and the impact you'll create. Be specific and heartfelt." rows="6" maxlength="2000" oninput="updateChar(this,'c-story-count')" required></textarea>
+              <div class="char-count"><span id="c-story-count">0</span>/2000</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="c-goal">Funding Goal (₹ INR) *</label>
+                <input type="number" id="c-goal" placeholder="e.g. 500000" min="1000" max="1000000000" oninput="updatePreview()" required />
+              </div>
+              <div class="form-group">
+                <label for="c-duration">Campaign Duration (days) *</label>
+                <input type="number" id="c-duration" placeholder="30" min="7" max="180" value="30" oninput="updatePreview()" required />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label>Upload Campaign Image</label>
+              <div class="upload-area" onclick="document.getElementById('c-image-upload').click()" ondragover="event.preventDefault()" ondrop="handleDrop(event)">
+                <div class="upload-icon">🖼️</div>
+                <p><span>Click to upload</span> or drag & drop</p>
+                <p style="margin-top:6px;font-size:.8rem;">PNG, JPG up to 10MB · Recommended: 1280×720</p>
+                <div id="upload-preview" style="margin-top:12px;display:none;">
+                  <img id="upload-img-preview" alt="Campaign image preview" style="max-height:140px;border-radius:8px;margin:0 auto;" />
+                </div>
+              </div>
+              <input type="file" id="c-image-upload" accept="image/*" style="display:none" onchange="previewImage(this)" />
+            </div>
+
+            <div class="form-group">
+              <label for="c-email">Contact Email *</label>
+              <input type="email" id="c-email" placeholder="you@organisation.org" required />
+            </div>
+
+            <div class="form-group">
+              <label for="c-phone">Contact Phone (optional)</label>
+              <input type="tel" id="c-phone" placeholder="+1 234 567 8900" />
+            </div>
+
+            <!-- Live Preview -->
+            <div class="impact-preview" id="impactPreview">
+              <h3>📊 Campaign Preview</h3>
+              <div class="preview-item">
+                <span class="preview-icon">🎯</span>
+                <div>Goal: <strong id="prev-goal">—</strong></div>
+              </div>
+              <div class="preview-item">
+                <span class="preview-icon">📅</span>
+                <div>Duration: <strong id="prev-duration">—</strong></div>
+              </div>
+              <div class="preview-item">
+                <span class="preview-icon">📆</span>
+                <div>End Date: <strong id="prev-enddate">—</strong></div>
+              </div>
+              <div class="preview-item">
+                <span class="preview-icon">💡</span>
+                <div>Daily needed: <strong id="prev-daily">—</strong></div>
+              </div>
+            </div>
+
+            <div class="form-nav-btns">
+              <button class="btn btn-secondary" onclick="goToStep(1)">← Back</button>
+              <button class="btn btn-primary" onclick="goToStep(3)">Next: Review →</button>
+            </div>
+          </div>
+
+          <!-- Step 3: Review -->
+          <div class="form-step-panel" id="panel-3">
+            <h2 class="form-section-title">✅ Review & Submit</h2>
+
+            <div id="review-content"></div>
+
+            <div class="tip-box" style="margin-top:24px;">
+              🛡️ <span>All campaigns are reviewed by our team within <strong>48 hours</strong>. You'll receive an email once approved and live.</span>
+            </div>
+
+            <div class="form-group" style="margin-top:24px;">
+              <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer;font-weight:400;font-size:.9rem;color:var(--text-secondary);">
+                <input type="checkbox" id="c-terms" style="margin-top:3px;width:auto;accent-color:var(--primary);" />
+                I agree to HopeFund's <a href="#" style="color:var(--primary-light);">Terms of Service</a> and confirm that all information provided is truthful and accurate.
+              </label>
+            </div>
+
+            <div class="form-nav-btns">
+              <button class="btn btn-secondary" onclick="goToStep(2)">← Back</button>
+              <button class="btn btn-gold btn-lg" onclick="submitCampaign()" id="submit-campaign-btn">
+                🚀 Submit Campaign
+              </button>
+            </div>
+          </div>
+
+          <!-- Success Screen (hidden initially) -->
+          <div class="success-screen" id="successScreen" style="display:none;">
+            <div class="success-icon">🎉</div>
+            <h2>Campaign is <span class="gradient-text">Now Live!</span></h2>
+            <p>Your campaign has been saved and is now <strong style="color:var(--secondary-light);">immediately visible</strong> on the homepage and campaigns page. Go check it out! 🚀</p>
+            <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;">
+              <a href="campaigns.html" class="btn btn-primary btn-lg">🌍 See Your Campaign</a>
+              <a href="../index.html" class="btn btn-secondary btn-lg">🏠 Go Home</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Why HopeFund sidebar info -->
+        <div style="max-width:700px;margin:40px auto 0;">
+          <h2 style="text-align:center;font-size:1.6rem;margin-bottom:24px;">Why Create on <span class="gradient-text">HopeFund?</span></h2>
+          <div class="steps-grid" style="grid-template-columns:repeat(3,1fr);">
+            <div class="step-card reveal">
+              <div class="step-number" style="width:50px;height:50px;font-size:1.3rem;">🔍</div>
+              <h3>Verified Trust</h3>
+              <p>All campaigns go through identity and cause verification before going live.</p>
+            </div>
+            <div class="step-card reveal">
+              <div class="step-number" style="width:50px;height:50px;font-size:1.3rem;">📣</div>
+              <h3>Huge Reach</h3>
+              <p>Access 4M+ monthly donors actively looking to fund social causes.</p>
+            </div>
+            <div class="step-card reveal">
+              <div class="step-number" style="width:50px;height:50px;font-size:1.3rem;">💰</div>
+              <h3>95% to Cause</h3>
+              <p>We only take 5% platform fee. The rest goes directly to your cause.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-bottom">
+        <p>© 2026 HopeFund. All rights reserved. 💚</p>
+        <div class="footer-bottom-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="../index.html">Home</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+  <div class="toast" id="toast"><span class="toast-icon" id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
+
+  <script>
+    /* ── Scroll ─────────────────────────────────────────────── */
+    window.addEventListener('scroll', () => {
+      document.getElementById('scrollTopBtn').classList.toggle('visible', window.scrollY > 200);
+    }, { passive: true });
+
+    const rObs = new IntersectionObserver(entries => {
+      entries.forEach((e, i) => {
+        if (e.isIntersecting) {
+          setTimeout(() => e.target.classList.add('revealed'), i * 80);
+          rObs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => rObs.observe(el));
+
+    /* ── Form Steps ─────────────────────────────────────────── */
+    let currentStep = 1;
+
+    function goToStep(step) {
+      if (step > currentStep && !validateStep(currentStep)) return;
+
+      document.querySelectorAll('.form-step-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.form-step-item').forEach((item, i) => {
+        item.classList.remove('active','done');
+        if (i + 1 < step) item.classList.add('done');
+        if (i + 1 === step) item.classList.add('active');
+      });
+      document.getElementById(`panel-${step}`).classList.add('active');
+      currentStep = step;
+
+      if (step === 3) buildReview();
+      document.getElementById('createFormCard').scrollIntoView({ behavior:'smooth', block:'start' });
+    }
+
+    function validateStep(step) {
+      if (step === 1) {
+        const title = document.getElementById('c-title').value.trim();
+        const cat = document.getElementById('c-category').value;
+        const loc = document.getElementById('c-location').value.trim();
+        const org = document.getElementById('c-org').value.trim();
+        const tag = document.getElementById('c-tagline').value.trim();
+        if (!title) return showToast('Please enter a campaign title.','error','⚠️'), false;
+        if (!cat) return showToast('Please select a category.','error','⚠️'), false;
+        if (!loc) return showToast('Please enter a location.','error','⚠️'), false;
+        if (!org) return showToast('Please enter your organisation/name.','error','⚠️'), false;
+        if (!tag) return showToast('Please enter a tagline.','error','⚠️'), false;
+      }
+      if (step === 2) {
+        const story = document.getElementById('c-story').value.trim();
+        const goal = document.getElementById('c-goal').value;
+        const email = document.getElementById('c-email').value.trim();
+        if (!story || story.length < 80) return showToast('Please write a more detailed story (min 80 chars).','error','⚠️'), false;
+        if (!goal || goal < 1000) return showToast('Please enter a valid goal (min ₹1,000).','error','⚠️'), false;
+        if (!email || !email.includes('@')) return showToast('Please enter a valid contact email.','error','⚠️'), false;
+      }
+      return true;
+    }
+
+    function updateChar(el, countId) {
+      document.getElementById(countId).textContent = el.value.length;
+    }
+
+    function fmtINR(n) {
+      if (n >= 10000000) return '₹' + (n/10000000).toFixed(2).replace(/\.?0+$/,'') + ' Cr';
+      if (n >= 100000)   return '₹' + (n/100000).toFixed(1).replace(/\.0$/,'') + ' L';
+      if (n >= 1000)     return '₹' + (n/1000).toFixed(0) + 'K';
+      return '₹' + n.toLocaleString('en-IN');
+    }
+
+    function updatePreview() {
+      const goal = parseFloat(document.getElementById('c-goal').value) || 0;
+      const days = parseInt(document.getElementById('c-duration').value) || 30;
+      document.getElementById('prev-goal').textContent     = goal ? fmtINR(goal) : '—';
+      document.getElementById('prev-duration').textContent = days + ' days';
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + days);
+      document.getElementById('prev-enddate').textContent = goal ? endDate.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}) : '—';
+      document.getElementById('prev-daily').textContent   = goal && days ? fmtINR(Math.ceil(goal/days)) + '/day' : '—';
+    }
+
+    /* ── Image Upload ────────────────────────────────────────── */
+    function previewImage(input) {
+      if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('upload-img-preview').src = e.target.result;
+          document.getElementById('upload-preview').style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+      }
+    }
+
+    function handleDrop(e) {
+      e.preventDefault();
+      const file = e.dataTransfer.files[0];
+      if (file && file.type.startsWith('image/')) {
+        const dt = new DataTransfer();
+        dt.items.add(file);
+        const input = document.getElementById('c-image-upload');
+        input.files = dt.files;
+        previewImage(input);
+      }
+    }
+
+    /* ── Review Builder ─────────────────────────────────────── */
+    function buildReview() {
+      const title    = document.getElementById('c-title').value;
+      const cat      = document.getElementById('c-category').options[document.getElementById('c-category').selectedIndex].text;
+      const location = document.getElementById('c-location').value;
+      const org      = document.getElementById('c-org').value;
+      const tagline  = document.getElementById('c-tagline').value;
+      const story    = document.getElementById('c-story').value;
+      const goal     = document.getElementById('c-goal').value;
+      const days     = document.getElementById('c-duration').value;
+      const email    = document.getElementById('c-email').value;
+
+      document.getElementById('review-content').innerHTML = `
+        <div style="background:var(--bg-card-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;">
+          <div style="margin-bottom:16px;"><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Campaign Title</div><div style="font-weight:700;font-size:1.1rem;">${escapeHtml(title)}</div></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+            <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Category</div><div style="font-weight:600;">${escapeHtml(cat)}</div></div>
+            <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Location</div><div style="font-weight:600;">${escapeHtml(location)}</div></div>
+            <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Funding Goal</div><div style="font-weight:600;color:var(--secondary-light);">${fmtINR(parseFloat(goal))}</div></div>
+            <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Duration</div><div style="font-weight:600;">${days} days</div></div>
+            <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Organisation</div><div style="font-weight:600;">${escapeHtml(org)}</div></div>
+            <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Contact Email</div><div style="font-weight:600;">${escapeHtml(email)}</div></div>
+          </div>
+          <div><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Tagline</div><div style="font-style:italic;color:var(--text-secondary);">"${escapeHtml(tagline)}"</div></div>
+          <div style="margin-top:16px;"><div style="font-size:.78rem;color:var(--text-muted);margin-bottom:4px;text-transform:uppercase;letter-spacing:1px;">Story Preview</div><div style="font-size:.88rem;color:var(--text-secondary);line-height:1.7;">${escapeHtml(story.substring(0,300))}${story.length > 300 ? '...' : ''}</div></div>
+        </div>
+      `;
+    }
+
+    function escapeHtml(str) {
+      return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    }
+
+    /* ── Submit & Save to localStorage ─────────────────────── */
+    function submitCampaign() {
+      if (!document.getElementById('c-terms').checked) {
+        return showToast('Please accept the Terms of Service.','error','⚠️');
+      }
+      const title    = document.getElementById('c-title').value.trim();
+      const category = document.getElementById('c-category').value;
+      const location = document.getElementById('c-location').value.trim();
+      const org      = document.getElementById('c-org').value.trim();
+      const tagline  = document.getElementById('c-tagline').value.trim();
+      const story    = document.getElementById('c-story').value.trim();
+      const goal     = parseFloat(document.getElementById('c-goal').value) || 0;
+      const days     = parseInt(document.getElementById('c-duration').value) || 30;
+      const email    = document.getElementById('c-email').value.trim();
+
+      // Build campaign object
+      const newCampaign = {
+        id:          Date.now(),
+        title,
+        org,
+        category,
+        description: tagline || story.substring(0, 140),
+        raised:      0,
+        goal,
+        donors:      0,
+        daysLeft:    days,
+        urgent:      false,
+        verified:    false,
+        location,
+        email,
+        userCreated: true
+      };
+
+      const btn = document.getElementById('submit-campaign-btn');
+      btn.textContent = '⏳ Saving Campaign...';
+      btn.disabled = true;
+
+      setTimeout(() => {
+        // ✅ Persist to localStorage
+        try {
+          const existing = JSON.parse(localStorage.getItem('hopefund_campaigns') || '[]');
+          existing.unshift(newCampaign);
+          localStorage.setItem('hopefund_campaigns', JSON.stringify(existing));
+        } catch(e) { console.warn('localStorage error:', e); }
+
+        document.getElementById('formSteps').style.display = 'none';
+        document.querySelectorAll('.form-step-panel').forEach(p => p.style.display = 'none');
+        document.getElementById('successScreen').style.display = 'block';
+        showToast('🎉 Campaign is now LIVE on the platform!', 'success', '✅');
+      }, 2000);
+    }
+
+    /* ── Toast ─────────────────────────────────────────────── */
+    let toastTimeout;
+    function showToast(msg, type='success', icon='✅') {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').textContent = msg;
+      document.getElementById('toast-icon').textContent = icon;
+      t.className = `toast ${type} show`;
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => t.classList.remove('show'), 4500);
+    }
+  </script>
+</body>
+</html>
