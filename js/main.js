@@ -122,7 +122,7 @@ function buildCampaignCard(c) {
   const isNew  = !!c.userCreated;
 
   return `
-    <div class="campaign-card" data-cat="${c.category}" onclick="openDonateModal('${escapeHtml(c.title)}')" role="article" aria-label="${escapeHtml(c.title)}">
+    <div class="campaign-card" data-cat="${c.category}" onclick="openDonateModal('${escapeHtml(c.title)}', ${c.id})" role="article" aria-label="${escapeHtml(c.title)}">
       <div class="card-img">
         <img src="${imgSrc}" alt="${escapeHtml(c.title)}" loading="lazy" />
         <span class="card-category cat-${c.category}">${CAT_LABELS[c.category] || c.category}</span>
@@ -154,7 +154,7 @@ function buildCampaignCard(c) {
           <span class="card-stat"><span class="icon">📍</span>${escapeHtml(c.location)}</span>
         </div>
         <div class="card-action">
-          <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:12px;" id="donate-btn-${c.id}" onclick="event.stopPropagation();openDonateModal('${escapeHtml(c.title)}')">
+          <button class="btn btn-primary btn-sm" style="width:100%;justify-content:center;margin-top:12px;" id="donate-btn-${c.id}" onclick="event.stopPropagation();openDonateModal('${escapeHtml(c.title)}', ${c.id})">
             💚 Donate Now
           </button>
         </div>
@@ -215,8 +215,10 @@ window.addEventListener('storage', () => renderCampaigns());
 /* ── Donate Modal ─────────────────────────────────────────── */
 const modal = document.getElementById('donateModal');
 let selectedAmt = 0;
+let currentDonationCampaignId = null;
 
-function openDonateModal(campaignName) {
+function openDonateModal(campaignName, campaignId) {
+  currentDonationCampaignId = campaignId || null;
   document.getElementById('modal-campaign-name').textContent = 'Supporting: ' + campaignName;
   modal.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -261,7 +263,7 @@ function formatExpiry(input) {
   input.value = v;
 }
 
-function processDonation() {
+async function processDonation() {
   const amount = selectedAmt || parseInt(document.getElementById('custom-amount').value) || 0;
   const name   = document.getElementById('donor-name').value.trim();
   const email  = document.getElementById('donor-email').value.trim();
@@ -276,12 +278,18 @@ function processDonation() {
   btn.textContent = '⏳ Processing...';
   btn.disabled    = true;
 
-  setTimeout(() => {
-    btn.textContent = '💚 Complete Donation';
-    btn.disabled    = false;
-    closeDonateModal();
-    showToast(`Thank you ${name}! Your ₹${amount.toLocaleString('en-IN')} donation is confirmed. 💚`, 'success', '✅');
-  }, 2000);
+  // Save donation to Supabase
+  if (currentDonationCampaignId && typeof processDonationInDB === 'function') {
+    await processDonationInDB(currentDonationCampaignId, amount);
+  }
+
+  btn.textContent = '💚 Complete Donation';
+  btn.disabled    = false;
+  closeDonateModal();
+  showToast(`Thank you ${name}! Your ₹${amount.toLocaleString('en-IN')} donation is confirmed. 💚`, 'success', '✅');
+
+  // Re-render campaigns to show updated amounts
+  renderCampaigns();
 }
 
 /* ── Newsletter ───────────────────────────────────────────── */
