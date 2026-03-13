@@ -167,6 +167,8 @@
   <button id="scrollTopBtn" onclick="scrollToTop()">↑</button>
   <div class="toast" id="toast"><span class="toast-icon" id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
   <script src="../js/data.js"></script>
   <script>
     /* ── Navbar ─────────────────────────────────────────────── */
@@ -277,10 +279,11 @@
       filterCampaigns();
     }
 
-    function filterCampaigns() {
+    async function filterCampaigns() {
       const search = document.getElementById('searchInput').value.toLowerCase();
       const sort   = document.getElementById('sortSelect').value;
-      let results  = getAllCampaigns().filter(c => {
+      const allCampaigns = await getAllCampaigns();
+      let results  = allCampaigns.filter(c => {
         const matchCat    = activeFilter === 'all' || c.category === activeFilter;
         const matchSearch = !search || c.title.toLowerCase().includes(search) || c.description.toLowerCase().includes(search) || c.org.toLowerCase().includes(search) || c.location.toLowerCase().includes(search);
         return matchCat && matchSearch;
@@ -296,7 +299,7 @@
       const grid = document.getElementById('campaignsGrid');
       const empty = document.getElementById('emptyState');
       document.getElementById('resultsCount').textContent = `Showing ${results.length} campaign${results.length !== 1 ? 's' : ''}`;
-      document.getElementById('campaign-count').textContent = `${getAllCampaigns().length} active campaigns`;
+      document.getElementById('campaign-count').textContent = `${allCampaigns.length} active campaigns`;
 
       if (results.length === 0) {
         grid.innerHTML = '';

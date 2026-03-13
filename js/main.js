@@ -167,9 +167,9 @@ function buildCampaignCard(c) {
 let currentFilter = 'all';
 const grid = document.getElementById('campaignsGrid');
 
-function renderCampaigns(filter) {
+async function renderCampaigns(filter) {
   filter = filter || currentFilter;
-  const all      = getAllCampaigns();
+  const all      = await getAllCampaigns();
   const filtered = filter === 'all' ? all : all.filter(c => c.category === filter);
   const preview  = filtered.slice(0, 6);
 
@@ -206,16 +206,8 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
 });
 
 /* ── Re-render on BFCache restore & tab focus ────────────── */
-window.addEventListener('pageshow', function() {
-  renderCampaigns();
-  const countEl = document.getElementById('total-campaign-count');
-  if (countEl) countEl.textContent = getAllCampaigns().length;
-});
-window.addEventListener('focus', function() {
-  renderCampaigns();
-  const countEl = document.getElementById('total-campaign-count');
-  if (countEl) countEl.textContent = getAllCampaigns().length;
-});
+window.addEventListener('pageshow', () => renderCampaigns());
+window.addEventListener('focus', () => renderCampaigns());
 
 // Re-render when localStorage changes (e.g. from create page)
 window.addEventListener('storage', () => renderCampaigns());

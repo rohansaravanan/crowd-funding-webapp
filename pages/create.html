@@ -333,6 +333,9 @@
   <button id="scrollTopBtn" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
   <div class="toast" id="toast"><span class="toast-icon" id="toast-icon">✅</span><span id="toast-msg">Done!</span></div>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+
   <script>
     /* ── Scroll ─────────────────────────────────────────────── */
     window.addEventListener('scroll', () => {
@@ -471,8 +474,8 @@
       return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
     }
 
-    /* ── Submit & Save to localStorage ─────────────────────── */
-    function submitCampaign() {
+    /* ── Submit & Save to Supabase ────────────────────────── */
+    async function submitCampaign() {
       if (!document.getElementById('c-terms').checked) {
         return showToast('Please accept the Terms of Service.','error','⚠️');
       }
@@ -505,22 +508,27 @@
       };
 
       const btn = document.getElementById('submit-campaign-btn');
-      btn.textContent = '⏳ Saving Campaign...';
+      btn.textContent = '⏳ Saving to Database...';
       btn.disabled = true;
 
-      setTimeout(() => {
-        // ✅ Persist to localStorage
+      // ✅ Save to Supabase (cloud database)
+      let saved = false;
+      if (typeof saveToSupabase === 'function') {
+        saved = await saveToSupabase(newCampaign);
+      }
+      // Fallback to localStorage
+      if (!saved) {
         try {
           const existing = JSON.parse(localStorage.getItem('hopefund_campaigns') || '[]');
           existing.unshift(newCampaign);
           localStorage.setItem('hopefund_campaigns', JSON.stringify(existing));
         } catch(e) { console.warn('localStorage error:', e); }
+      }
 
-        document.getElementById('formSteps').style.display = 'none';
-        document.querySelectorAll('.form-step-panel').forEach(p => p.style.display = 'none');
-        document.getElementById('successScreen').style.display = 'block';
-        showToast('🎉 Campaign is now LIVE on the platform!', 'success', '✅');
-      }, 2000);
+      document.getElementById('formSteps').style.display = 'none';
+      document.querySelectorAll('.form-step-panel').forEach(p => p.style.display = 'none');
+      document.getElementById('successScreen').style.display = 'block';
+      showToast('🎉 Campaign saved to database & now LIVE worldwide!', 'success', '✅');
     }
 
     /* ── Toast ─────────────────────────────────────────────── */

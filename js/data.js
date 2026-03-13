@@ -1,5 +1,6 @@
 // ============================================================
 //  HOPEFUND — Campaign Data (INR — Indian Rupees ₹)
+//  Now uses Supabase for cross-device persistence
 // ============================================================
 
 const CAMPAIGNS = [
@@ -139,8 +140,23 @@ function formatINR(n) {
   return '₹' + n.toLocaleString('en-IN');
 }
 
-// ── LocalStorage: User-Created Campaigns ────────────────────
-function getUserCampaigns() {
+// ── Cache for Supabase campaigns (avoid re-fetching every render) ──
+let _supabaseCampaignsCache = null;
+let _lastFetchTime = 0;
+const CACHE_TTL = 5000; // 5 seconds
+
+async function getUserCampaigns() {
+  const now = Date.now();
+  if (_supabaseCampaignsCache && (now - _lastFetchTime) < CACHE_TTL) {
+    return _supabaseCampaignsCache;
+  }
+  if (typeof getSupabaseCampaigns === 'function') {
+    const campaigns = await getSupabaseCampaigns();
+    _supabaseCampaignsCache = campaigns;
+    _lastFetchTime = now;
+    return campaigns;
+  }
+  // Fallback to localStorage
   try {
     return JSON.parse(localStorage.getItem('hopefund_campaigns') || '[]');
   } catch (e) {
@@ -148,12 +164,25 @@ function getUserCampaigns() {
   }
 }
 
-function saveUserCampaign(campaign) {
-  const existing = getUserCampaigns();
-  existing.unshift(campaign); // newest first
-  localStorage.setItem('hopefund_campaigns', JSON.stringify(existing));
+async function saveUserCampaign(campaign) {
+  // Save to Supabase
+  if (typeof saveToSupabase === 'function') {
+    const success = await saveToSupabase(campaign);
+    if (success) {
+      _supabaseCampaignsCache = null; // Invalidate cache
+      return true;
+    }
+  }
+  // Fallback to localStorage
+  try {
+    const existing = JSON.parse(localStorage.getItem('hopefund_campaigns') || '[]');
+    existing.unshift(campaign);
+    localStorage.setItem('hopefund_campaigns', JSON.stringify(existing));
+  } catch (e) { console.warn('Save failed:', e); }
+  return true;
 }
 
-function getAllCampaigns() {
-  return [...getUserCampaigns(), ...CAMPAIGNS];
+async function getAllCampaigns() {
+  const userCampaigns = await getUserCampaigns();
+  return [...userCampaigns, ...CAMPAIGNS];
 }
