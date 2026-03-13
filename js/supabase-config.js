@@ -94,36 +94,17 @@ window.saveToSupabase = async function(campaign) {
 
 console.log('✅ Supabase functions registered:', typeof window.saveToSupabase, typeof window.getSupabaseCampaigns);
 
-// ── Process a donation: update raised & donors in Supabase ───
+// ── Process a donation via Supabase RPC function ────────────
 window.processDonationInDB = async function(campaignId, amount) {
   if (!_supabaseClient) return false;
   try {
-    // First get current values
-    var fetchResult = await _supabaseClient
-      .from('campaigns')
-      .select('raised, donors')
-      .eq('id', campaignId)
-      .single();
+    var result = await _supabaseClient.rpc('process_donation', {
+      campaign_id: campaignId,
+      donation_amount: amount
+    });
 
-    if (fetchResult.error || !fetchResult.data) {
-      console.warn('Campaign not found in DB (may be a default campaign):', campaignId);
-      return false;
-    }
-
-    var currentRaised = Number(fetchResult.data.raised) || 0;
-    var currentDonors = Number(fetchResult.data.donors) || 0;
-
-    // Update with new donation
-    var updateResult = await _supabaseClient
-      .from('campaigns')
-      .update({
-        raised: currentRaised + amount,
-        donors: currentDonors + 1
-      })
-      .eq('id', campaignId);
-
-    if (updateResult.error) {
-      console.error('Donation update error:', updateResult.error.message);
+    if (result.error) {
+      console.error('Donation RPC error:', result.error.message);
       return false;
     }
     console.log('✅ Donation of ₹' + amount + ' recorded for campaign ' + campaignId);
